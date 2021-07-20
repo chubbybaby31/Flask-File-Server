@@ -1,0 +1,165 @@
+*{
+    margin:0px;
+}
+
+.top_area{
+    background-color:black;
+    position: fixed;
+
+    width: 740px;
+    padding: 10px;
+
+    z-index: 1002;
+
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -900%);
+}
+
+.return_button{
+    margin: 0px;
+}
+
+.file_view{
+    padding: 30px;
+    background-color:rgb(8, 11, 15);
+    position: fixed;
+    width: 700px;
+    height: 600px;
+
+    z-index: 1001;
+
+    margin: 0;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    overflow-y: scroll;
+}
+
+body{
+    margin: 0px;
+    background-color:rgb(15, 19, 27);
+    color:rgb(250, 240, 228);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+button{
+    background-color:rgb(248, 57, 255);
+    color:white;
+
+    border: 0px;
+    border-radius: 12px;
+    min-width: 35px;
+    margin-right: 30px;
+
+    transition: 0.3s;
+}
+
+.top_row{
+    display: flex;
+    justify-content: space-between;
+
+    padding: 30px;
+    
+
+    margin-left: -40px;
+    margin-bottom: 10px;
+
+    max-width: 99%;
+    min-width: 99%;
+
+    z-index: 1000;
+    opacity: 0.99;
+
+    position: fixed;
+
+    background-color: rgb(7, 8, 12);
+}
+
+.page_title{
+    margin-top: -10px;
+    background-color: rgb(29, 33, 41);
+    border-radius: 7px;
+    padding: 7px;
+}
+
+.top_bar_options{
+    margin-top: 10px;
+}
+
+.back_button{
+    margin-right: 50px;
+}
+
+.upload_button{
+    margin-right: 0px;
+}
+.new_folder_button{
+    margin-right: 0px;
+}
+
+.row{
+    background-color: rgb(29, 33, 41);
+    padding: 10px;
+
+    min-width: 95%;
+    max-width: 95%;
+
+    margin-bottom: 10px;
+    border-radius: 7px;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+.file_name{
+    margin-left: 50px;
+}
+
+button:hover{
+    background-color:white;
+    color:rgb(248, 57, 255);
+}
+
+.delete_button{
+    background-color:rgb(248, 55, 55);
+}
+.delete_button:hover{
+    background-color:white;
+    color:rgb(248, 55, 55);
+}
+
+.download_button{
+    background-color:rgb(31, 186, 233);
+}
+.download_button:hover{
+    background-color:white;
+    color:rgb(31, 186, 233);
+}
+
+.disabled_view_button{
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+.disabled_view_button:hover{
+    background-color: rgb(248, 57, 255);
+    color:white;
+}
+
+hr{
+    margin-bottom: 7px;
+    margin-left: -0.5%;
+
+    max-width: 97%;
+    border-radius: 12px;
+}
+
+.file_name{
+    display: flex;
+}
+
+.image_type{
+    margin-right: 20px;
+}

@@ -1,0 +1,118 @@
+<html>
+    <head>
+        <title>File manager</title>
+        <link rel="stylesheet" href="/static/file_server.css">
+    </head>
+    <body> 
+         <ul>
+            <div class="top_row"> 
+                <h1 class="page_title">File Server</h1>
+                <form action = "http://localhost:5000/uploader" method = "POST" enctype = "multipart/form-data" class="upload_file">
+                    <button type="submit" class="upload_button">Upload</button>
+                    <input type = "file" name = "file" />
+                </form> 
+                <form action="/md" class="make_new_folder">
+                    <button type="submit" value="New folder" class="new_folder_button">New folder</button>
+                    <input name="folder" type="text" placeholder="Folder Name"/>
+                </form>
+                <ul><a href="/cd?path=.."><button type="button" class="back_button">← Back</button></a></ul>
+            </div>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <hr>
+            <div class="files">
+                {% for item in file_list[0: -1] %}
+                {% if '.' not in item%}
+                <ul class="row">
+                    <strong class="file_name">
+                        <img src="/static/folder.png" height="25px" width="25px" class="image_type">
+                        {{item}}
+                    </strong>
+                    <div class="options">
+                        <a href="/cd?path={{current_working_directory + '/' + item}}"><button type="button" class="open_button">Open</button></a>
+                        <a href="/download_folder?folder={{item}}"><button type="button" class="download_button">Download</button></a>
+                        <a href="/rm?dir={{item}}"><button type="button" class="delete_button">Delete</button></a>
+                    </div>
+                </ul>
+                {% elif '.txt' in item or '.py' in item or '.json' in item %}
+                <ul class="row">
+                    <strong class="file_name">
+                        <img src="/static/file-icon.png" height="25px" width="25px" class="image_type">
+                        {{item}}
+                    </strong>
+                    <div class="options">
+                        <a href="/view?file={{current_working_directory + '/' + item}}"><button type="button" class="view_button">View</button></a>
+                        <a href="/download_file?path={{current_working_directory + '/' + item}}"><button type="button" class="download_button">Download</button></a>
+                        <a href="/rm_file?file={{item}}"><button type="button" class="delete_button">Delete</button></a>
+                    </div>
+                </ul>
+                {% elif '.mp4' in item or '.mov' in item %}
+                <ul class="row">
+                    <strong class="file_name">
+                        <img src="/static/video.png" height="25px" width="25px" class="image_type">
+                        {{item}}
+                    </strong>
+                    <div class="options">
+                        <a href="/view?file={{current_working_directory + '/' + item}}"><button type="button" class="view_button">View</button></a>
+                        <a href="/download_file?path={{current_working_directory + '/' + item}}"><button type="button" class="download_button">Download</button></a>
+                        <a href="/rm_file?file={{item}}"><button type="button" class="delete_button">Delete</button></a>
+                    </div>
+                </ul>
+                {% elif '.mp3' in item %}
+                <ul class="row">
+                    <strong class="file_name">
+                        <img src="/static/audio.png" height="25px" width="25px" class="image_type">
+                        {{item}}
+                    </strong>
+                    <div class="options">
+                        <a href="/view?file={{current_working_directory + '/' + item}}"><button type="button" class="view_button">View</button></a>
+                        <a href="/download_file?path={{current_working_directory + '/' + item}}"><button type="button" class="download_button">Download</button></a>
+                        <a href="/rm_file?file={{item}}"><button type="button" class="delete_button">Delete</button></a>
+                    </div>
+                </ul>
+                {% elif '.png' in item or '.jpg' in item or '.jpeg' in item or '.svg' in item or '.gif' in item %}
+                <ul class="row">
+                    <strong class="file_name">
+                        <img src="/static/image.png" height="25px" width="25px" class="image_type">
+                        {{item}}
+                    </strong>
+                    <div class="options">
+                        <a href="/view?file={{current_working_directory + '/' + item}}"><button type="button" class="view_button">View</button></a>
+                        <a href="/download_file?path={{current_working_directory + '/' + item}}"><button type="button" class="download_button">Download</button></a>
+                        <a href="/rm_file?file={{item}}"><button type="button" class="delete_button">Delete</button></a>
+                    </div>
+                </ul>
+                {% elif '.zip' in item or '.gz' in item %}
+                <ul class="row">
+                    <strong class="file_name">
+                        <img src="/static/zip_file_icon.png" height="25px" width="25px" class="image_type">
+                        {{item}}
+                    </strong>
+                    <div class="options">
+                        <a href="/view?file={{current_working_directory + '/' + item}}"><button type="button" class="view_button">View</button></a>
+                        <a href="/download_file?path={{current_working_directory + '/' + item}}"><button type="button" class="download_button">Download</button></a>
+                        <a href="/rm_file?file={{item}}"><button type="button" class="delete_button">Delete</button></a>
+                    </div>
+                </ul>
+                {% else %}
+                <ul class="row">
+                    <strong class="file_name">
+                        <img src="/static/file-icon.png" height="25px" width="25px" class="image_type">
+                        {{item}}
+                    </strong>
+                    <div class="options">
+                        <button type="button" class="disabled_view_button">View</button>
+                        <a href="/download_file?path={{current_working_directory + '/' + item}}"><button type="button" class="download_button">Download</button></a>
+                        <a href="/rm_file?file={{item}}"><button type="button" class="delete_button">Delete</button></a>
+                    </div>
+                </ul>
+                {% endif%}
+                {% endfor %}
+            </div>
+        </ul>
+    </body>
+</html>
