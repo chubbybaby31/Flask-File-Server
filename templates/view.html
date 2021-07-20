@@ -35,13 +35,24 @@
                     top: 50%;
                     left: 50%;
                     transform: translate(12%, 12%)">
-                    {% elif '.mp4' in file or '.mov' in file %}
+                    {% elif '.mp4' in file %}
                     <video width="500" height="500" controls style="max-width: 500px; max-height: 500px; margin: 0;
                     top: 50%;
                     left: 50%;
                     transform: translate(12%, 12%)">
                         <source src={{file}} type="video/mp4">
                     </video>
+                    {% elif '.mov' in file %}
+                    <video width="500" height="500" controls style="max-width: 500px; max-height: 500px; margin: 0;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(12%, 12%)">
+                        <source src={{file}} type="video/mov">
+                    </video>
+                    {% elif '.mp3' in file %}
+                    <audio  controls style="margin: 0; top: 50%; left: 50%; transform: translate(80%, 800%)">
+                        <source src={{file}} type="audio/mp3">
+                    </audio>
                     {% elif '.txt' in file or '.py' in file or '.json' in file %}
                     {% for line in file_contents %}
                     <p>{{line}}</p>
