@@ -6,15 +6,20 @@ import shutil
 import zipfile
 from _thread import start_new_thread
 
-# create web app instance
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.getcwd()
 
-# handle root route
+trash_path = '/Users/Vishva/Documents/VSCode/Python/File Server/trash_bin'
+trash_files = []
+
 @app.route('/')
 def root():
-    app.config['UPLOAD_FOLDER'] = os.getcwd()
+    cwd = os.getcwd()
+    app.config['UPLOAD_FOLDER'] = cwd
 
+    if 'trash_bin' in cwd:
+        return render_template('trash_bin.html', current_working_directory=os.getcwd(),
+         file_list=subprocess.check_output('ls', shell=True).decode('utf-8').split('\n'), file='/static/image.png')
     return render_template('file_server.html', current_working_directory=os.getcwd(),
          file_list=subprocess.check_output('ls', shell=True).decode('utf-8').split('\n'), file='/static/image.png') # use 'dir' command on Windows
 
@@ -28,44 +33,81 @@ def upload_file():
 @app.route('/return')
 def return_to_fileserver():
     return redirect('/')
-    
-# handle 'cd' command
+
+@app.route('/restore')
+def restore():
+    src_path = request.args.get('path')
+    dst_path = ""
+    for p in trash_files:
+        if src_path.__eq__(p.split(";*|")[1]):
+            dst_path = p.split(";*|")[0]
+            break
+    shutil.move(src_path, dst_path)
+    return redirect('/')
+
 @app.route('/cd')
 def cd():
-    # run 'level up' command
     os.chdir(request.args.get('path'))
-    
-    # redirect to file manager
     return redirect('/')
 
-# handle 'make directory' command
 @app.route('/md')
 def md():
-    # create new folder
     os.mkdir(request.args.get('folder'))
-    
-    # redirect to fole manager
     return redirect('/')
 
-# handle 'make directory' command
+@app.route('/rm_all')
+def rm_all():
+    cwd = os.getcwd()
+    dirs = os.listdir(cwd)
+    for dir in dirs:
+        if '.' in dir and dir:
+            os.remove(cwd + '/' + dir)
+        elif dir:
+            shutil.rmtree(cwd + '/' + dir)
+
+    return redirect('/')
+
 @app.route('/rm')
 def rm():
-    # remove certain directory
-    shutil.rmtree(os.getcwd() + '/' + request.args.get('dir'))
-    
-    # redirect to fole manager
+    src_path = os.getcwd() + '/' + request.args.get('dir')
+    dirs = src_path.split('/')
+    dst_path = ""
+    for i in range(len(dirs)- 1):
+        dst_path += dirs[i]
+        if i < len(dirs) - 2:
+            dst_path += '/'
+
+    trash_files.append(dst_path + ";*|" + trash_path + '/' + request.args.get('dir'))
+    shutil.move(src_path, trash_path)
     return redirect('/')
 
 @app.route('/rm_file')
 def rm_file():
+    src_path = os.getcwd() + '/' + request.args.get('file')
+    dirs = src_path.split('/')
+    dst_path = ""
+    for i in range(len(dirs)- 1):
+        dst_path += dirs[i]
+        if i < len(dirs) - 2:
+            dst_path += '/'
+
+    trash_files.append(dst_path + ";*|" + trash_path + '/' + request.args.get('file'))
+    shutil.move(src_path, trash_path)
+    return redirect('/')
+
+@app.route('/rm_perm')
+def rm_perm():
+    shutil.rmtree(os.getcwd() + '/' + request.args.get('dir'))
+    return redirect('/')
+
+@app.route('/rm_file_perm')
+def rm_file_perm():
     path = os.getcwd() + '/' + request.args.get('file')
     os.remove(path)
     return redirect('/')
     
-# view text files
 @app.route('/view')
 def view():
-    # get the file content
     contents = ""
     if '.txt' in request.args.get('file') or '.py' in request.args.get('file') or '.json' in request.args.get('file'):
         with open(request.args.get('file')) as f:
@@ -103,7 +145,5 @@ def remove_zip(path):
     time.sleep(2)
     os.remove(path)
 
-
-# run the HTTP server
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)
