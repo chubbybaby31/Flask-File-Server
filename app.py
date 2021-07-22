@@ -12,6 +12,15 @@ app.config['UPLOAD_FOLDER'] = os.getcwd()
 trash_path = '/Users/Vishva/Documents/VSCode/Python/File Server/trash_bin'
 trash_files = []
 
+try:
+    with open('/Users/Vishva/Documents/VSCode/Python/File Server/trash_file.txt', 'r') as f:
+        content = f.readlines()
+        for line in content:
+            if ";*|" in line:
+                trash_files.append(line)
+except Exception:
+    pass
+
 @app.route('/')
 def root():
     cwd = os.getcwd()
