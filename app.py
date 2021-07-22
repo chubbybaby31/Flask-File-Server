@@ -26,11 +26,18 @@ def root():
     cwd = os.getcwd()
     app.config['UPLOAD_FOLDER'] = cwd
 
+    file_list = subprocess.check_output('ls', shell=True).decode('utf-8').split('\n')
+    for x in range(2):
+        for i in range(len(file_list)):
+            if "trash_bin" in file_list[i] or "trash_file.txt" in file_list[i]:
+                file_list.pop(i)
+                break
+
     if 'trash_bin' in cwd:
         return render_template('trash_bin.html', current_working_directory=os.getcwd(),
-         file_list=subprocess.check_output('ls', shell=True).decode('utf-8').split('\n'), file='/static/image.png')
+         file_list=file_list, file='/static/image.png')
     return render_template('file_server.html', current_working_directory=os.getcwd(),
-         file_list=subprocess.check_output('ls', shell=True).decode('utf-8').split('\n'), file='/static/image.png') # use 'dir' command on Windows
+         file_list=file_list, file='/static/image.png')
 
 @app.route('/uploader', methods = ['GET', 'POST'])
 def upload_file():
