@@ -37,10 +37,14 @@ def return_to_fileserver():
 @app.route('/restore')
 def restore():
     src_path = request.args.get('path')
+    compare_path = src_path + '\n'
     dst_path = ""
-    for p in trash_files:
-        if src_path.__eq__(p.split(";*|")[1]):
+    for i in range(len(trash_files)):
+        p = trash_files[i]
+        if compare_path.__eq__(p.split(";*|")[1]):
             dst_path = p.split(";*|")[0]
+            trash_files.pop(i)
+            update_trash_file()
             break
     shutil.move(src_path, dst_path)
     return redirect('/')
@@ -64,6 +68,8 @@ def rm_all():
             os.remove(cwd + '/' + dir)
         elif dir:
             shutil.rmtree(cwd + '/' + dir)
+    trash_files.clear()
+    update_trash_file()
 
     return redirect('/')
 
@@ -77,7 +83,8 @@ def rm():
         if i < len(dirs) - 2:
             dst_path += '/'
 
-    trash_files.append(dst_path + ";*|" + trash_path + '/' + request.args.get('dir'))
+    trash_files.append(dst_path + ";*|" + trash_path + '/' + request.args.get('dir') + '\n')
+    update_trash_file()
     shutil.move(src_path, trash_path)
     return redirect('/')
 
@@ -91,19 +98,41 @@ def rm_file():
         if i < len(dirs) - 2:
             dst_path += '/'
 
-    trash_files.append(dst_path + ";*|" + trash_path + '/' + request.args.get('file'))
+    trash_files.append(dst_path + ";*|" + trash_path + '/' + request.args.get('file') + '\n')
+    update_trash_file()
     shutil.move(src_path, trash_path)
     return redirect('/')
 
 @app.route('/rm_perm')
 def rm_perm():
-    shutil.rmtree(os.getcwd() + '/' + request.args.get('dir'))
+    path = os.getcwd() + '/' + request.args.get('dir')
+    compare_path = path + '\n'
+    shutil.rmtree(path)
+
+    for i in range(len(trash_files)):
+        p = trash_files[i].split(";*|")[1]
+        if compare_path.__eq__(p):
+            trash_files.pop(i)
+            update_trash_file()
+            print("removed")
+            break
+
     return redirect('/')
 
 @app.route('/rm_file_perm')
 def rm_file_perm():
     path = os.getcwd() + '/' + request.args.get('file')
+    compare_path = path + '\n'
     os.remove(path)
+
+    for i in range(len(trash_files)):
+        p = trash_files[i].split(";*|")[1]
+        if compare_path.__eq__(p):
+            trash_files.pop(i)
+            update_trash_file()
+            print("removed")
+            break
+
     return redirect('/')
     
 @app.route('/view')
@@ -141,9 +170,16 @@ def download_folder():
     return send_file(path + '.zip', as_attachment=True)
 
 def remove_zip(path):
-    print(path)
     time.sleep(2)
     os.remove(path)
+
+def update_trash_file():
+    with open('/Users/Vishva/Documents/VSCode/Python/File Server/trash_file.txt', 'w') as f:
+        f.truncate(0) # Delete file
+        f.close()
+    with open('/Users/Vishva/Documents/VSCode/Python/File Server/trash_file.txt', 'w') as f:
+        f.writelines(trash_files) # Make new file and add paths from trash_files list
+        f.close()
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True)
