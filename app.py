@@ -11,7 +11,7 @@ app.config['UPLOAD_FOLDER'] = os.getcwd()
 
 trash_path = os.getcwd() + "/trash_bin" # path to trash_bin directory
 txt_trash_file_path = os.getcwd() + "/trash_file.txt" # path to txt file that stores the deleted file paths permenently
-ip_url = "http://173.64.118.240:5000" # public/private ip_address for uploading files
+ip_url = "http://localhost:5000/uploader" # public/private ip_address for uploading files
 trash_files = [] # array that is used to store the deleted file paths temperarily
 
 # Making trash_bin directory if there isn't already one
