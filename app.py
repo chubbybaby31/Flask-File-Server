@@ -9,6 +9,9 @@ from _thread import start_new_thread
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.getcwd()
 
+base_path = "/Users/Vishva/Documents/VSCode/Python/File Server/static/Files"
+base_dir = "/static/Files"
+os.chdir(base_path)
 trash_path = os.getcwd() + "/trash_bin" # path to trash_bin directory
 txt_trash_file_path = os.getcwd() + "/trash_file.txt" # path to txt file that stores the deleted file paths permenently
 ip_url = "http://localhost:5000/uploader" # public/private ip_address for uploading files
@@ -35,22 +38,26 @@ except Exception:
 @app.route('/')
 def root():
     cwd = os.getcwd() # getting the current working directory
-    app.config['UPLOAD_FOLDER'] = cwd # setting the upload folder
+    if base_dir in cwd:
+        app.config['UPLOAD_FOLDER'] = cwd # setting the upload folder
 
-    file_list = subprocess.check_output('ls', shell=True).decode('utf-8').split('\n') # creating the file_list containing the files that will be displayed
-    # Delete any file that we want to be invisible i.e. trash_bin and trash_file.txt
-    for x in range(2):
-        for i in range(len(file_list)):
-            if "trash_bin" in file_list[i] or "trash_file.txt" in file_list[i]:
-                file_list.pop(i)
-                break
-    
-    # If in the trash directory, render a modified template for it.
-    if 'trash_bin' in cwd:
-        return render_template('trash_bin.html', current_working_directory=cwd,
-         file_list=file_list, file='/static/image.png')
-    return render_template('file_server.html', current_working_directory=cwd,
-         file_list=file_list, file='/static/image.png', trash_path=trash_path, ip_url=ip_url)
+        file_list = subprocess.check_output('ls', shell=True).decode('utf-8').split('\n') # creating the file_list containing the files that will be displayed
+        # Delete any file that we want to be invisible i.e. trash_bin and trash_file.txt
+        for x in range(2):
+            for i in range(len(file_list)):
+                if "trash_bin" in file_list[i] or "trash_file.txt" in file_list[i]:
+                    file_list.pop(i)
+                    break
+        
+        # If in the trash directory, render a modified template for it.
+        if 'trash_bin' in cwd:
+            return render_template('trash_bin.html', current_working_directory=cwd,
+            file_list=file_list, file='/static/image.png')
+        return render_template('file_server.html', current_working_directory=cwd,
+            file_list=file_list, file='/static/image.png', trash_path=trash_path, ip_url=ip_url)
+    else:
+        os.chdir(base_path)
+        return redirect('/')
 
 # uploading files
 @app.route('/uploader', methods = ['GET', 'POST'])
@@ -186,7 +193,16 @@ def view():
         contents = c.split('\n') # array of the lines of the txt file. If no split the view template will put everythin on one line
     path = request.args.get('file')
     p = path.split('/File Server/')[1] # getting the local path of the file, change to "Flask-File-Server" if cloned from github
-    return render_template('view.html', current_working_directory=os.getcwd(), file_list=subprocess.check_output('ls', shell=True).decode('utf-8').split('\n'), file=p, file_contents=contents)
+
+    file_list = subprocess.check_output('ls', shell=True).decode('utf-8').split('\n') # creating the file_list containing the files that will be displayed
+    # Delete any file that we want to be invisible i.e. trash_bin and trash_file.txt
+    for x in range(2):
+        for i in range(len(file_list)):
+            if "trash_bin" in file_list[i] or "trash_file.txt" in file_list[i]:
+                file_list.pop(i)
+                break
+
+    return render_template('view.html', current_working_directory=os.getcwd(), file_list=file_list, file=p, file_contents=contents)
 
 # downloading file
 @app.route('/download_file')
