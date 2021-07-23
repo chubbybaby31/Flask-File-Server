@@ -9,11 +9,19 @@ from _thread import start_new_thread
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.getcwd()
 
-trash_path = '/Users/Vishva/Documents/VSCode/Python/File Server/trash_bin'
+trash_path = os.getcwd() + "/trash_bin"
+txt_trash_file_path = os.getcwd() + "/trash_file.txt"
+ip_url = "http://173.64.118.240:5000"
 trash_files = []
 
 try:
-    with open('/Users/Vishva/Documents/VSCode/Python/File Server/trash_file.txt', 'r') as f:
+    os.mkdir("trash_bin")
+    trash_path = os.getcwd + "/trash_bin"
+except Exception:
+    pass
+
+try:
+    with open(txt_trash_file_path, 'r') as f:
         content = f.readlines()
         for line in content:
             if ";*|" in line:
@@ -34,17 +42,17 @@ def root():
                 break
 
     if 'trash_bin' in cwd:
-        return render_template('trash_bin.html', current_working_directory=os.getcwd(),
+        return render_template('trash_bin.html', current_working_directory=cwd,
          file_list=file_list, file='/static/image.png')
-    return render_template('file_server.html', current_working_directory=os.getcwd(),
-         file_list=file_list, file='/static/image.png')
+    return render_template('file_server.html', current_working_directory=cwd,
+         file_list=file_list, file='/static/image.png', trash_path=trash_path, ip_url=ip_url)
 
 @app.route('/uploader', methods = ['GET', 'POST'])
 def upload_file():
    if request.method == 'POST':
-      f = request.files['file']
-      f.save(f.filename)
-      return redirect('/')
+        f = request.files['file']
+        f.save(f.filename)
+        return redirect('/')
 
 @app.route('/return')
 def return_to_fileserver():
@@ -190,12 +198,12 @@ def remove_zip(path):
     os.remove(path)
 
 def update_trash_file():
-    with open('/Users/Vishva/Documents/VSCode/Python/File Server/trash_file.txt', 'w') as f:
+    with open(txt_trash_file_path, 'w') as f:
         f.truncate(0) # Delete file
         f.close()
-    with open('/Users/Vishva/Documents/VSCode/Python/File Server/trash_file.txt', 'w') as f:
+    with open(txt_trash_file_path, 'w') as f:
         f.writelines(trash_files) # Make new file and add paths from trash_files list
         f.close()
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    app.run(host='0.0.0.0' ,debug=True, threaded=True)

@@ -2,6 +2,28 @@
     margin:0px;
 }
 
+@media (min-width: 300px) {
+    :root {
+      --size-divisor: 3;
+    }
+  }
+
+@media (min-width: 500px) {
+    :root {
+      --size-divisor: 2;
+    }
+  }
+  @media (min-width: 750px) {
+    :root {
+      --size-divisor: 1.5;
+    }
+  }
+  @media (min-width: 1000px) { 
+    :root {
+      --size-divisor: 1;
+    }
+  }
+
 body{
     margin: 0px;
     background-color:rgb(15, 19, 27);
@@ -16,8 +38,8 @@ button{
 
     border: 0px;
     border-radius: 12px;
-    min-width: 35px;
-    margin-right: 30px;
+    min-width: calc(35px / var(--size-divisor));
+    margin-right: calc(30px / var(--size-divisor));
 
     transition: 0.3s;
 }
@@ -26,11 +48,11 @@ button{
     display: flex;
     justify-content: space-between;
 
-    padding: 30px;
+    padding: calc(30px / var(--size-divisor));
     
 
-    margin-left: -40px;
-    margin-bottom: 10px;
+    margin-left: calc(-40px / var(--size-divisor));
+    margin-bottom: calc(10px / var(--size-divisor));
 
     max-width: 99%;
     min-width: 99%;
@@ -44,18 +66,18 @@ button{
 }
 
 .page_title{
-    margin-top: -10px;
+    margin-top: calc(-10px / var(--size-divisor));
     background-color: rgb(29, 33, 41);
     border-radius: 7px;
-    padding: 7px;
+    padding: calc(7px / var(--size-divisor));
 }
 
 .top_bar_options{
-    margin-top: 10px;
+    margin-top: calc(10px / var(--size-divisor));
 }
 
 .back_button{
-    margin-right: 50px;
+    margin-right: calc(50px / var(--size-divisor));
 }
 
 .upload_button{
@@ -67,12 +89,12 @@ button{
 
 .row{
     background-color: rgb(29, 33, 41);
-    padding: 10px;
+    padding: calc(10px / var(--size-divisor));
 
     min-width: 95%;
     max-width: 95%;
 
-    margin-bottom: 10px;
+    margin-bottom: calc(10px / var(--size-divisor));
     border-radius: 7px;
 
     display: flex;
@@ -80,7 +102,7 @@ button{
 }
 
 .file_name{
-    margin-left: 50px;
+    margin-left: calc(50px / var(--size-divisor));
 }
 
 button:hover{
@@ -114,7 +136,7 @@ button:hover{
 }
 
 hr{
-    margin-bottom: 7px;
+    margin-bottom: calc(7px / var(--size-divisor));
     margin-left: -0.5%;
 
     max-width: 97%;
@@ -126,5 +148,5 @@ hr{
 }
 
 .image_type{
-    margin-right: 20px;
+    margin-right: calc(20px / var(--size-divisor));
 }

@@ -7,7 +7,7 @@
          <ul>
             <div class="top_row"> 
                 <h1 class="page_title">File Server</h1>
-                <form action = "http://localhost:5000/uploader" method = "POST" enctype = "multipart/form-data" class="upload_file">
+                <form action = {{ip_url}} method = "POST" enctype = "multipart/form-data" class="upload_file">
                     <button type="submit" class="upload_button">Upload</button>
                     <input type = "file" name = "file" />
                 </form> 
@@ -15,7 +15,7 @@
                     <button type="submit" value="New folder" class="new_folder_button">New folder</button>
                     <input name="folder" type="text" placeholder="Folder Name"/>
                 </form>
-                <a href="/cd?path=/Users/Vishva/Documents/VSCode/Python/File Server/trash_bin"><button type="button" class="trash_bin_button">Trash Bin</button></a>
+                <a href={{trash_path}}><button type="button" class="trash_bin_button">Trash Bin</button></a>
                 <ul><a href="/cd?path=.."><button type="button" class="back_button">← Back</button></a></ul>
             </div>
             <br>
