@@ -85,6 +85,7 @@ def restore():
 @app.route('/cd')
 def cd():
     os.chdir(request.args.get('path'))
+    print(os.getcwd())
     return redirect('/')
 
 # make new directory
