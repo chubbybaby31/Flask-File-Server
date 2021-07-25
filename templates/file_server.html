@@ -7,7 +7,7 @@
          <ul>
             <div class="top_row"> 
                 <h1 class="page_title">File Server</h1>
-                <form action = {{ip_url}} method = "POST" enctype = "multipart/form-data" class="upload_file">
+                <form action = "{{ip_url + '/uploader'}}" method = "POST" enctype = "multipart/form-data" class="upload_file">
                     <button type="submit" class="upload_button">Upload</button>
                     <input type = "file" name = "file" />
                 </form> 

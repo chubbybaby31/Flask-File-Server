@@ -14,8 +14,11 @@ base_dir = "/static/Files"
 os.chdir(base_path)
 trash_path = os.getcwd() + "/trash_bin" # path to trash_bin directory
 txt_trash_file_path = os.getcwd() + "/trash_file.txt" # path to txt file that stores the deleted file paths permenently
-ip_url = "http://localhost:5000/uploader" # public/private ip_address for uploading files
+ip_url = "http://localhost:5000" # public/private ip_address for uploading files
 trash_files = [] # array that is used to store the deleted file paths temperarily
+
+global is_logged_in
+is_logged_in = False
 
 # Making trash_bin directory if there isn't already one
 try:
@@ -34,9 +37,31 @@ try:
 except Exception:
     pass
 
-# main page, file_server
 @app.route('/')
 def root():
+    if not is_logged_in:
+        return redirect('/login')
+    else:
+        return redirect('/file_server')
+
+@app.route('/login')
+def login():
+    global is_logged_in
+    is_logged_in = False
+    username = request.args.get('usr')
+    password = request.args.get('pswd')
+    error = ""
+    if username == "vishva" and password == "v2007":
+        is_logged_in =  True
+        return redirect('/file_server')
+    else:
+        return render_template('login.html', ip_url=ip_url, error=error)
+
+# main page, file_server
+@app.route('/file_server')
+def file_server():
+    if not is_logged_in:
+        return redirect('/login')
     cwd = os.getcwd() # getting the current working directory
     if base_dir in cwd:
         app.config['UPLOAD_FOLDER'] = cwd # setting the upload folder
@@ -57,7 +82,7 @@ def root():
             file_list=file_list, file='/static/image.png', trash_path=trash_path, ip_url=ip_url)
     else:
         os.chdir(base_path)
-        return redirect('/')
+        return redirect('/file_server')
 
 # uploading files
 @app.route('/uploader', methods = ['GET', 'POST'])
@@ -65,7 +90,7 @@ def upload_file():
    if request.method == 'POST':
         f = request.files['file']
         f.save(f.filename)
-        return redirect('/')
+        return redirect('/file_server')
 
 # returning from viewing a file back to normal fileserver template
 @app.route('/return')
@@ -86,20 +111,20 @@ def restore():
             update_trash_file() # deleting file from txt
             break
     shutil.move(src_path, dst_path)
-    return redirect('/')
+    return redirect('/file_server')
 
 # change directory
 @app.route('/cd')
 def cd():
     os.chdir(request.args.get('path'))
     print(os.getcwd())
-    return redirect('/')
+    return redirect('/file_server')
 
 # make new directory
 @app.route('/md')
 def md():
     os.mkdir(request.args.get('folder'))
-    return redirect('/')
+    return redirect('/file_server')
 
 # remove all files from trash_bin
 @app.route('/rm_all')
@@ -114,7 +139,7 @@ def rm_all():
     trash_files.clear() # clearing the trash_files array
     update_trash_file() # clearing the txt file
 
-    return redirect('/')
+    return redirect('/file_server')
 
 # moving folder to trash
 @app.route('/rm')
@@ -130,7 +155,7 @@ def rm():
     trash_files.append(dst_path + ";*|" + trash_path + '/' + request.args.get('dir') + '\n') # Adding the folder path to the array and txt file
     update_trash_file()
     shutil.move(src_path, trash_path) # moving folder to trash
-    return redirect('/')
+    return redirect('/file_server')
 
 # moving files to trash
 @app.route('/rm_file')
@@ -146,7 +171,7 @@ def rm_file():
     trash_files.append(dst_path + ";*|" + trash_path + '/' + request.args.get('file') + '\n') # Adding the file path to the array and txt file
     update_trash_file()
     shutil.move(src_path, trash_path) # moving file to trash
-    return redirect('/')
+    return redirect('/file_server')
 
 # removing folder permenently (removing from trash_bin)
 @app.route('/rm_perm')
@@ -161,10 +186,9 @@ def rm_perm():
         if compare_path.__eq__(p):
             trash_files.pop(i)
             update_trash_file()
-            print("removed")
             break
 
-    return redirect('/')
+    return redirect('/file_server')
 
 @app.route('/rm_file_perm')
 def rm_file_perm():
@@ -181,7 +205,7 @@ def rm_file_perm():
             print("removed")
             break
 
-    return redirect('/')
+    return redirect('/file_server')
 
 # viewing the file
 @app.route('/view')
